@@ -6,58 +6,77 @@
 #    By: dimachad <dimachad@student.42berlin.d      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/20 15:08:24 by dimachad          #+#    #+#              #
-#    Updated: 2025/05/08 23:38:39 by dimachad         ###   ########.fr        #
+#    Updated: 2025/05/13 22:16:46 by dimachad         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: dimachad <dimachad@student.42berlin.d      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/03/20 15:08:24 by dimachad          #+#    #+#              #
+#    Updated: 2025/05/12 23:22:11 by dimachad         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME		= minitalk
-DEBUG_NAME	= minitalk
-CC			= cc
-RM			= rm -f
-FLAGS		= -Wall -Werror -Wextra
-DEBUG_FLAGS	= -Wall -Werror -Wextra -g -O0
-LIBFTDIR	= libft/
-SRC_DIR		= srcs/
+# Variables
+NAME_CLIENT  = client
+NAME_SERVER  = server
+CC          = cc
+RM          = rm -f
+FLAGS       = -Wall -Werror -Wextra
+DEBUG_FLAGS = -Wall -Werror -Wextra -g -O0
+LIBFTDIR    = libft/
 
-SRC_1		= server.c
-SRC_2		= client.c
+# Sources and objects
+SRC_CLIENT  = client.c
+SRC_SERVER  = server.c
+OBJ_CLIENT  = ${SRC_CLIENT:.c=.o}
+OBJ_SERVER  = ${SRC_SERVER:.c=.o}
+INCLUDE     = -L ./libft -lft
 
-OBJ_1		= ${SRC_1:.c=.o}
-OBJ_2		= ${SRC_2:.c=.o}
+# Default target: Build the minitalk client and server
+all: ${NAME_CLIENT} ${NAME_SERVER}
 
-DEBUG_OBJ_1	= ${SRC_1:.c=_debug.o}
-DEBUG_OBJ_2	= ${SRC_2:.c=_debug.o}
+# Build client executable
+${NAME_CLIENT}: ${OBJ_CLIENT}
+	make -C $(LIBFTDIR)  # Build the libft library
+	${CC} ${FLAGS} ${OBJ_CLIENT} -o ${NAME_CLIENT} ${INCLUDE}
 
-INCLUDE		= -L ./libft -lft
+# Build server executable
+${NAME_SERVER}: ${OBJ_SERVER}
+	make -C $(LIBFTDIR)  # Build the libft library
+	${CC} ${FLAGS} ${OBJ_SERVER} -o ${NAME_SERVER} ${INCLUDE}
 
+# Debug target: Build with debug flags
+debug: ${NAME_CLIENT}_debug ${NAME_SERVER}_debug
+
+${NAME_CLIENT}_debug: ${SRC_CLIENT}
+	make -C $(LIBFTDIR)  # Build the libft library
+	${CC} ${DEBUG_FLAGS} ${SRC_CLIENT} -o ${NAME_CLIENT}_debug ${INCLUDE}
+
+${NAME_SERVER}_debug: ${SRC_SERVER}
+	make -C $(LIBFTDIR)  # Build the libft library
+	${CC} ${DEBUG_FLAGS} ${SRC_SERVER} -o ${NAME_SERVER}_debug ${INCLUDE}
+
+# Compile .c files into .o files
 .c.o:
 	${CC} ${FLAGS} -c $< -o $@
 
-all: ${NAME}
-
-${NAME}: ${OBJ_1} ${OBJ_2} ${OBJ_tests}
-
-	make -C $(LIBFTDIR)
-	${CC} ${FLAGS} ${OBJ_1} ${OBJ_2} ${OBJ_tests} -o ${NAME} ${INCLUDE}
-
-debug: ${DEBUG_NAME}
-
-${DEBUG_NAME}: ${DEBUG_OBJ_1} ${DEBUG_OBJ_2} ${DEBUG_OBJ_tests}
-	make -C $(LIBFTDIR)
-	${CC} ${DEBUG_FLAGS} ${DEBUG_OBJ_1} ${DEBUG_OBJ_2} ${DEBUG_OBJ_tests} -o ${DEBUG_NAME} ${INCLUDE}
-
-%_debug.o: %.c
-	${CC} ${DEBUG_FLAGS} -c $< -o $@
-
+# Clean up object files and executables
 clean:
-	${RM} ${OBJ_1} ${OBJ_2} ${OBJ_3} ${OBJ_4} ${OBJ_5} ${OBJ_tests} ${DEBUG_OBJ_1} ${DEBUG_OBJ_2} ${DEBUG_OBJ_3} ${DEBUG_OBJ_4} ${DEBUG_OBJ_5} ${DEBUG_OBJ_tests} ${NAME} ${DEBUG_NAME}
-	@cd $(LIBFTDIR) && $(MAKE) clean
+	${RM} ${OBJ_CLIENT} ${OBJ_SERVER}
+	cd $(LIBFTDIR) && $(MAKE) clean
 
+# Full clean (also remove the executables)
 fclean: clean
-	${RM} ${NAME} ${DEBUG_NAME}
-	@cd $(LIBFTDIR) && $(MAKE) fclean
+	${RM} ${NAME_CLIENT} ${NAME_SERVER} ${NAME_CLIENT}_debug ${NAME_SERVER}_debug
+	cd $(LIBFTDIR) && $(MAKE) fclean
 
-re: clean all
+# Rebuild everything
+re: fclean all
 
+# .PHONY to avoid conflicts with file names
 .PHONY: all clean fclean re debug
-

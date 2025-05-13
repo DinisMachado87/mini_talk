@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 17:27:15 by dimachad          #+#    #+#             */
-/*   Updated: 2025/05/08 17:13:13 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/04/13 02:14:07 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,10 @@ int	ft_printf(const char *form_str, ...)
 			form_str++;
 			details = is_d_i_or_u(form_str);
 			if (details)
+			{
 				if (details == '-' || details == '+' || details == 'U')
 					form_str++;
+			}
 			n_printed += printf_lock(&args, *form_str, details);
 		}
 		else
