@@ -27,6 +27,7 @@ LIBFT_SRC = 			ft_isprint.c \
 				ft_strchr.c \
 				ft_strrchr.c \
 				ft_strncmp.c \
+				ft_strcmp.c \
 				ft_memcmp.c \
 				ft_strnstr.c \
 				ft_memchr.c \

@@ -29,6 +29,7 @@ RM          = rm -f
 FLAGS       = -Wall -Werror -Wextra
 DEBUG_FLAGS = -Wall -Werror -Wextra -g -O0
 LIBFTDIR    = libft/
+LIBFT		= $(LIBFTDIR)libft.a
 
 # Sources and objects
 SRC_CLIENT  = client.c
@@ -38,8 +39,10 @@ OBJ_SERVER  = ${SRC_SERVER:.c=.o}
 INCLUDE     = -L ./libft -lft
 
 # Default target: Build the minitalk client and server
-all: ${NAME_CLIENT} ${NAME_SERVER}
+all: $(LIBFT) ${NAME_CLIENT} ${NAME_SERVER}
 
+$(LIBFT):
+	make -C $(LIBFTDIR)
 # Build client executable
 ${NAME_CLIENT}: ${OBJ_CLIENT}
 	make -C $(LIBFTDIR)  # Build the libft library

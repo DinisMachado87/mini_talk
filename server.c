@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 22:55:39 by dimachad          #+#    #+#             */
-/*   Updated: 2025/05/13 22:34:06 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/06/11 19:07:28 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,21 @@ void	signal_handler(int signal, siginfo_t *info, void *context)
 	kill(info->si_pid, SIGUSR1);
 }
 
-int	main(void)
+static void	setup_signal_handler(void)
 {
 	struct sigaction	signal;
 
-	ft_printf("SERVER_ID:%d\n", getpid());
 	sigemptyset(&signal.sa_mask);
 	signal.sa_flags = SA_SIGINFO;
 	signal.sa_sigaction = signal_handler;
 	sigaction(SIGUSR1, &signal, NULL); 
 	sigaction(SIGUSR2, &signal, NULL); 
+}
+
+int	main(void)
+{
+	setup_signal_handler();
+	ft_printf("SERVER_ID:%d\n", getpid());
 	while (1)
 		pause();
 	return (0);
